@@ -28,7 +28,5 @@ class PlaceAdapter(private val fragment: Fragment, private val placeList: List<P
         holder.placeAddress.text = place.address
     }
 
-    override fun getItemCount(): Int {
-        return placeList.size
-    }
+    override fun getItemCount() = placeList.size
 }

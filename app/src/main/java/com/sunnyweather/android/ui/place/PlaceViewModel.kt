@@ -1,5 +1,6 @@
 package com.sunnyweather.android.ui.place
 
+import android.util.Log
 import android.view.animation.Transformation
 import androidx.appcompat.widget.SwitchCompat
 import androidx.lifecycle.MutableLiveData
@@ -18,5 +19,7 @@ class PlaceViewModel: ViewModel() {
 
     fun searchPlaces(query: String) {
         searchLiveData.value = query
+
+        Log.d("PlaceViewModel", "searchPlaces called with query: $query")
     }
 }
