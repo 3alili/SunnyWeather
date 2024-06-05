@@ -2,6 +2,7 @@ package com.sunnyweather.android.logic
 
 import android.util.Log
 import androidx.lifecycle.liveData
+import com.sunnyweather.android.logic.dao.PlaceDao
 import com.sunnyweather.android.logic.model.Place
 import com.sunnyweather.android.logic.model.Weather
 import com.sunnyweather.android.logic.network.SunnyWeatherNetwork
@@ -50,8 +51,12 @@ object Repository {
                     )
                 }
             }
-        }
     }
+
+    fun savePlace(place: Place) = PlaceDao.savePlace(place)
+    fun getSavedPlace() = PlaceDao.getSavedPlace()
+    fun isPlaceSaved() = PlaceDao.isPlaceSaved()
+}
 
     //fire调用livedata，在代码块中统一进行try catch处理，将执行结果调用emit发射出去，避免每个函数都要调用一次try catch
     private fun <T> fire(context: CoroutineContext, block: suspend () -> Result<T>) =
