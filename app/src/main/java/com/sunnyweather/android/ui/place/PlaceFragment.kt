@@ -16,6 +16,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.sunnyweather.android.MainActivity
 import com.sunnyweather.android.R
 import com.sunnyweather.android.ui.weather.WeatherActivity
 
@@ -23,6 +24,7 @@ class PlaceFragment : Fragment() {
     //懒加载，使viewModel可以随时使用，不用关心它何时初始化、是否为空
     val viewModel by lazy { ViewModelProvider(this).get(PlaceViewModel::class.java)}
     private lateinit var adapter: PlaceAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -33,8 +35,9 @@ class PlaceFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        //判断是否存储有城市的数据，如果有就获取数据并解析成Place对象，然后传递给WeatherActivity
-        if(viewModel.isPlaceSaved()){
+        //判断如果存储有城市的数据同时如果PlaceFragment被嵌入MainActivity中，
+        //就获取数据并解析成Place对象，然后传递给WeatherActivity
+        if(activity is MainActivity && viewModel.isPlaceSaved()){
             val place = viewModel.getSavedPlace()
             val intent = Intent(context, WeatherActivity::class.java).apply {
                 putExtra("location_lng",place.location.lng)

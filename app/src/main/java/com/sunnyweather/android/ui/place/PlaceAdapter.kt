@@ -1,5 +1,6 @@
 package com.sunnyweather.android.ui.place
 
+import android.app.Activity
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
@@ -22,18 +23,31 @@ class PlaceAdapter(private val fragment: PlaceFragment, private val placeList: L
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.place_item,parent,false)
         val holder = ViewHolder(view)
+        //点击某个地址后,保存所选的地址，判断当前是在MainActivity还是WeatherActivity
         holder.itemView.setOnClickListener{
             val position = holder.adapterPosition
             val place = placeList[position]
-            val intent = Intent(parent.context, WeatherActivity::class.java).apply {
-                putExtra("location_lng", place.location.lng)
-                putExtra("location_lat", place.location.lat)
-                putExtra("place_name",place.name)
+            val activity = fragment.activity
+
+            //如果actiivity是WeatherActivity则关闭滑动菜单,将所选的地址信息传入activity的viewModel并显示
+            if(activity is WeatherActivity) {
+                activity.drawerLayout.closeDrawers()
+                activity.viewModel.locationLng = place.location.lng
+                activity.viewModel.locationLat = place.location.lat
+                activity.viewModel.placeName = place.name
+                activity.refreshWeather()
+            } else {  //如果是在MainActivity就通过intent跳转到WeatherActivity并关闭MainActivity
+                val intent = Intent(parent.context, WeatherActivity::class.java).apply {
+                    putExtra("location_lng", place.location.lng)
+                    putExtra("location_lat", place.location.lat)
+                    putExtra("place_name",place.name)
+                }
+                //打开weatheractivity，关闭mainactivity
+                fragment.startActivity(intent)
+                activity?.finish()
             }
-            //保存点击的地址
+            //保存这次的地址
             fragment.viewModel.savePlace(place)
-            fragment.startActivity(intent)
-            fragment.activity?.finish()
         }
         return holder
     }
